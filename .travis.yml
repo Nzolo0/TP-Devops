@@ -2,7 +2,8 @@ language: java
 
 script:
   - cd ./simple-api
-  - mvn clean verify
+  - mvn clean verify org.jacoco:jacoco-maven-plugin:prepare-agent install
+sonar:sonar -Dsonar.projectKey=Nzolo0_TP-Devops
 
   # Connexion à Docker
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
@@ -21,3 +22,8 @@ cache:
 
 services:
   - docker
+
+addons:
+  sonarcloud:
+    organization: "Nzolo0"
+    token: "$SONARCLOUD_TOKEN"
