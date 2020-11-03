@@ -1,15 +1,14 @@
 language: java
 
-script:
-  - cd ./simple-api
-  - mvn clean verify org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=Nzolo0_TP-Devops
+jobs:
+  include:
+    - stage: sonar
+      name: Test 1
+      script: bash scripts/sonar.sh
 
-  # Connexion à Docker
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-  # Build
-  - docker build -t $DOCKER_USERNAME/tp-devops .
-  # Publication des images
-  - docker push $DOCKER_USERNAME/tp-devops
+    - stage: docker
+      name: Test 2
+      script: bash scripts/docker.sh
 
 branches:
   only:
