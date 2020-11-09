@@ -1,0 +1,15 @@
+- hosts: all
+  gather_facts: false
+  become: yes
+  
+  tasks:
+  # Install Docker
+  - name: Test connection
+    ping:
+  roles:
+#  - docker
+#  - python
+#  - network
+  - database
+  - app
+  - proxy

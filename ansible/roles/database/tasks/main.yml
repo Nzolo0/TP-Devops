@@ -1,0 +1,18 @@
+---
+# tasks file for roles/database
+# - name: Pull image
+#   docker_image:
+#     name: nzolo/tp-devops:database
+#     source: pull
+
+- name: Build image
+  docker_container:
+    name: database
+    image: nzolo/tp-devops:database
+    networks:
+      - name: devops
+    restart: yes
+    env:
+      POSTGRES_PASSWORD=pwd
+      POSTGRES_USER=usr
+      POSTGRES_DB=db

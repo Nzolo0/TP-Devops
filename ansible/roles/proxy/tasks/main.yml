@@ -1,0 +1,14 @@
+---
+# tasks file for roles/proxy
+# - name: Pull image
+#   docker_image:
+#     name: nzolo/tp-devops:httpd
+#     source: pull
+
+- name: Build image
+  docker_container:
+    name: reverse_proxy
+    image: nzolo/tp-devops:httpd
+    ports: 80:80
+    networks:
+      - name: devops
