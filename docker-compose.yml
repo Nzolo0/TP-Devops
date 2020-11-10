@@ -17,14 +17,20 @@ services:
     env_file:
       - database/.env
 
+  front:
+    container_name: front
+    build: ./front
+    networks:
+      - app-network
+
   httpd:
     container_name: reverse_proxy
     build: ./httpd
     ports:
+      - "8080/8080"
       - "80:80"
     networks:
       - app-network
-
 
 volumes:
   my_db_volume:

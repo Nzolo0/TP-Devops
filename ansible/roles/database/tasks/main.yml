@@ -5,7 +5,7 @@
 #     name: nzolo/tp-devops:database
 #     source: pull
 
-- name: Build image
+- name: Build database image
   docker_container:
     name: database
     image: nzolo/tp-devops:database

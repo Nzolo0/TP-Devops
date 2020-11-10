@@ -5,10 +5,9 @@
 #     name: nzolo/tp-devops:simple-api
 #     source: pull
 
-- name: Build image
+- name: Build backend image
   docker_container:
     name: backend
     image: nzolo/tp-devops:simple-api
     networks:
       - name: devops
-    links: database

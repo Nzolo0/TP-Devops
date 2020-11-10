@@ -5,7 +5,7 @@
 #     name: nzolo/tp-devops:httpd
 #     source: pull
 
-- name: Build image
+- name: Build reverse_proxy image
   docker_container:
     name: reverse_proxy
     image: nzolo/tp-devops:httpd
