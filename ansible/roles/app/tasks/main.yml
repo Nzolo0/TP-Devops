@@ -11,3 +11,4 @@
     image: nzolo/tp-devops:simple-api
     networks:
       - name: devops
+    pull: yes

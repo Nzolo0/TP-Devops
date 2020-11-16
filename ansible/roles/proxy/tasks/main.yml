@@ -12,3 +12,4 @@
     ports: 80:80
     networks:
       - name: devops
+    pull: yes

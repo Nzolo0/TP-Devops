@@ -1,97 +1,68 @@
-# TP part 01 - Docker
+# Compte rendu DevOps
+*Enzo BATISTA*
 
-## Introduction
-L'objectif de ce TP est de prendre en main l'environnement Docker et plus si affinitée !
+## TP01
 
-Le but de ce TP est de créer trois conteneurs :
+    
+1. Why should we run the container with a flag -e to give the environment variables ?
 
-- Un serveur Web : Apache
-- Un serveur backend avec une API : Java
-- Une base de données : PostgreSQL
-- Un client pour la base de données : adminer
+    Pour sécuriser les identifiants en évitant de les rentrer en clair dans un fichier.
 
+2. Why do we need a volume to be attached to our postgres container ?
 
-Les notions suivantes seront abordées : 
+    Pour éviter que les données ne soient effacées lorsque nous redémarrons la base de données.
 
-- Création d'un image personalisée avec Dockerfile
-- L'exposition des ports d'un container
-- Le mappage des ports d'un container
-- Le mappage de volume pour bénéficier de la persistance
-- L'utilisation d'entrypoint (mis à disposition par l'image)
-- L'utilisation de docker-compose
-- La configuration très basique d'un reverse proxy
+3. Why do we need a multistage build ?
 
-## Base de donnée
+    Pour optimiser la taille des images.
+    On utilise le jre pour run le jdk (car l'image du jdk est trop lourde) après avoir build le jdk.
 
-### Build de l'image
+4. Why do we need a reverse proxy ?
+    
+    Son utilisation est due à la sécurité, à la haute disponibilité, à l'équilibrage de la charge et à l'authentification/autorisation centralisée. En effet, il permet de canaliser toutes les requêtes du réseau interne pour les transmettre sur le serveur et est donc la seule source de tout le contenu pour le client.
 
-On build notre image :
+5. Why is docker-compose so important ?
 
-```docker
-docker build -t database .
-```
+    Permet de centraliser toutes les actions des Dockerfile et tout lancer avec une seule commande : `docker-compose up` au lieu de build chaque Dockerfile manuellement.
 
-* ```-t database``` : permet de spécifier un tag à l'image 
-* ```.``` : spécifie le contexte
-* ```-f Database.Dockerfile``` : permet de spécifier le nom du Dockerfile si le nom par défaut n'est pas utilisé
+6. Why do we put our images into an online repository ?
 
-### Lancement d'un conteneur
+    Pour les sauvegarder et permettre qu'elles soient utilisables par d'autres équipes ou machines.
 
-Ensuite on run / exécute notre image :
+---
 
-```docker
-docker run --rm \
-    --name database \
-    --env-file .env \
-    # -p 5432:5432 \  Facultatif -> Utile si on souhaite exposer la BDD, dans notre cas non --> seulement à d'autre conteneur présent sur la même machine --> la solution : utilisé le nom du contenur directement !
-    --network=bridge-app-network \ 
-    database
-```
-Il faut avoir au préalable crée le network -> ```docker network create app-network```
-
-Explication des paramètres :
-* ```--rm``` : effectue un clean-up du container quand il est arrêté.
-  * Càd : Docker supprime automatiquement le container (et tout ce qui est lié à celui-ci) quand il est arrêté et les volumes anonymes associés (équivalent de ```docker rm -v database```).
-  * A noter : Pas utilisé en prod mais pratique pour tester/accomplir quelque chose dans un temps réduit -> tester, compiler une application au sein d'un conteneur, vérifier un bon fonctionnement et libérer de l'espace une fois fini.
-  
-* ```--name``` : permet de nommer le container pour l'identifier, par ex : utiliser son nom pour le lier à d'autres applications.
-* ```-env-file``` : permet de spécifier le fichier qui contient les variables d'environnment.
-  * A noter : on peut aussi spécifier directement des variables d'environement avec ```-e VAR1=TOTO``` (alias de ```-env```) mais cela devient fastidieux si l'on a beaucoup de variables d'environnement.
-* ```-p``` : permet de mapper un ou plusieurs port de la machine hôte avec le conteneur
-* ```-v``` : permet de mapper un ou plusieurs volume de la machine hôte avec le conteneur (pour bénéficier de données persistante -> la base de données ne sera pas vide à chaque redémarrage).
+## TP02
 
 
-Ajouter adminer (facultatif) : 
-```
-docker run --network=app-network --link database:db -p 8081:8080 adminer
-```
-## Application Java
+1. Ok, what is it supposed to do (`mvn clean verify`)?
 
-## Build de l'image
-
-On build notre image :
-
-```docker
-docker build -t backend .
-```
-On lance le container:
-```
-docker run --network=app-network -p 8080:8080 --name backend_app backend
-```
-
-## Reverse-Proxy
-
-On fait exactement la même chose que pour les étapes d'avant on build et on run l'image.
-
-# Docker-Compose pour les rassembler tous !
-
-Docker-Compose est un super outil pour configurer/définir/désigner des applications docker avec plusieurs conteneurs.
-Celui-ci est au format YAML.
-
-* Voici la documentation : https://docs.docker.com/compose/
-
-Pour créer et lancer les conteneurs : ```docker-compose up``` et ajouter ```-d``` pour lancer en arrière plan
-
-Pour arrêter et supprimer l'ensemble des éléments (volumes, netorks, containers, images) : ```docker-compose down```
+    Cette commande va effacer les constructions précédentes dans le cache (sinon il peut y avoir un comportement inattendu car Maven n'a pas recréé chaque partie de l'application), puis elle va recréer chaque module dans l'application et enfin elle va exécuter les tests unitaires et les tests d'intégration (parfois appelés aussi tests de composants).
 
 
+2. Unit tests ? Component test ?
+
+    Tests pour vérifier le bon fonctionnement de l'application. Ils permettent ainsi de détecter et corriger des bugs plus facilement. Les tests unitaires vont tester chaque module individuellement alors que les tests de composants testeront la communication/interaction entre eux.
+
+3. What are testcontainers?
+
+    Il s'agit de bibliothèques java qui permettent d'exécuter un tas de conteneurs de docker pendant les tests.
+
+4. Why do we need this branch (*develop*) ?
+    
+    Pour différencier les branches de production (master) et de développement (develop).
+
+5. Secured variables, why ?
+
+    Pour empêcher l'utilisation illégale de nos variables et ne pas les exposer publiquement.
+
+6. For what purpose (*Travis*) ?
+    
+    Pour vérifier le bon fonctionnement de l'application à chaque push sur Github.
+
+---
+
+## TP03
+
+1. Ask yourself: what is $basearch?
+
+    Variable qui indique l'architecture du système (32bit, 64bit etc...).
